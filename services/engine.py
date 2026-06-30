@@ -9,7 +9,7 @@ def parse_smart_text(text):
     today = get_ist_now()
     final_date = today.strftime("%d-%m-%Y")
 
-    # Patterns: DD-MM-YYYY, DD-MM, DD Month, DD-Month
+    # Matches patterns like 26-06, 26-06-2026, 26 June, 26-June
     date_pattern = r'(\d{1,2}[-/]\d{1,2}(?:[-/]\d{2,4})?|\d{1,2}\s(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*)'
     found_date = re.search(date_pattern, text, re.IGNORECASE)
 
