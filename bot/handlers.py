@@ -1,4 +1,4 @@
-import io, dateparser
+import io, dateparser, os
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from data.storage import save_expense, get_data, hard_delete, get_categories
 from services.engine import parse_smart_text, fuzzy_match_category, transcribe
@@ -8,8 +8,19 @@ from bot.keyboards import build_delete_keyboard
 from config.logger import log_error
 from config.settings import get_ist_now
 
+# --- SECURITY LAYER ---
+AUTHORIZED_USERS = {int(x) for x in os.getenv("AUTHORIZED_USER_IDS", "").split(",")}
+
+
+async def is_authorized(update):
+    if update.effective_chat.id not in AUTHORIZED_USERS:
+        await update.message.reply_text("🚫 Access Denied.")
+        return False
+    return True
+
 
 async def handle_text_pipeline(update, context, text, is_voice=False):
+    if not await is_authorized(update): return
     try:
         uid = update.effective_chat.id
         item, amt, date = parse_smart_text(text)
@@ -64,6 +75,7 @@ async def callback_handler(update, context):
 
 
 async def report_handler(update, context):
+    if not await is_authorized(update): return
     try:
         query = " ".join(context.args) if context.args else "today"
         target_dt = dateparser.parse(query, settings={'PREFER_DATES_FROM': 'past', 'TIMEZONE': 'Asia/Kolkata',
