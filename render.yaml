@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: finance-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: EXCEL_FILE_ID
+        sync: false
+      - key: SHEET_NAME
+        value: Daily Expense Log
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ADMIN_CHAT_ID
+        sync: false

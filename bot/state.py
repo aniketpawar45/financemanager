@@ -1,0 +1,2 @@
+pending = {}
+delete_state = {}
